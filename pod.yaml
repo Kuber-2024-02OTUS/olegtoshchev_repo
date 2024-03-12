@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: work
+  namespace: homework
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 8000
+    volumeMounts:
+    - name: workdir
+      mountPath: /homework
+  # These containers are run during pod initialization
+  initContainers:
+  - name: install
+    image: busybox:1.28
+    command:
+    - wget
+    - "-O"
+    - "/init/index.html"
+    - http://ya.ru
+    volumeMounts:
+    - name: workdir
+      mountPath: "/init"
+  - name: install2
+    image: busybox:1.28
+    command:
+    - /usr/bin/srm  
+    - -f
+    - "/homework/index.html"
+    volumeMounts:
+    - name: workdir
+      mountPath: "/homework"
+  dnsPolicy: Default
+  volumes:
+  - name: workdir
+    emptyDir: {}

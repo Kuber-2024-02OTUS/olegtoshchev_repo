@@ -27,7 +27,7 @@ spec:
   - name: install2
     image: busybox:1.28
     command:
-    - /usr/bin/srm  
+    - /usr/bin/rm  
     - -f
     - "/homework/index.html"
     volumeMounts:

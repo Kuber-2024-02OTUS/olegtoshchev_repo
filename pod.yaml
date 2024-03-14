@@ -10,30 +10,24 @@ spec:
     ports:
     - containerPort: 8000
     volumeMounts:
-    - name: workdir
+    - name: mydir
       mountPath: /homework
-  # These containers are run during pod initialization
+    lifecycle:
+     preStop:
+       exec:
+         command: ["rm", "-f", "/homework/index.html"]
+  # These container get index.html
   initContainers:
-  - name: install
-    image: busybox:1.28
+  - name: init-container
+    image: busybox
     command:
     - wget
     - "-O"
     - "/init/index.html"
-    - http://ya.ru
+    - http://info.cern.ch/
     volumeMounts:
-    - name: workdir
-      mountPath: "/init"
-  - name: install2
-    image: busybox:1.28
-    command:
-    - /usr/bin/rm  
-    - -f
-    - "/homework/index.html"
-    volumeMounts:
-    - name: workdir
-      mountPath: "/homework"
-  dnsPolicy: Default
+    - name: mydir
+      mountPath: /init
   volumes:
-  - name: workdir
+  - name: mydir
     emptyDir: {}

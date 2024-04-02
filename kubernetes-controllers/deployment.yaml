@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: homework
+  name: homework2
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      initContainers:
+       - name: install
+         image: busybox:1.28
+         command: ['sh', '-c', "wget -O /init/index.html http://ya.ru"]
+         volumeMounts:
+         - name: workdir
+           mountPath: /init
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+         - containerPort: 8000
+        volumeMounts:
+         - name: workdir
+           mountPath: /homework
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh","-c","rm -f /homework/index.html"]
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /homework/index.html
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      nodeSelector:
+        homework: "true"
+      volumes:
+      - name: workdir
+        emptyDir: {}

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: homework
+  name: work
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      initContainers:
+       - name: install
+         image: busybox:1.28
+         command: 
+         - wget 
+         - "-O" 
+         - "/init/index.html" 
+         - "http://ya.ru"
+         volumeMounts:
+         - name: workdir
+           mountPath: /init
+      containers:
+      - name: nginxinstall
+        image: olegtoshchev/ng1nx:v0.1
+        ports:
+         - containerPort: 8000
+        volumeMounts:
+         - name: workdir
+           mountPath: /homework
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh","-c","rm -f /homework/index.html"]
+        readinessProbe:
+          httpGet:
+              path: /index.html
+              port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: workdir
+        emptyDir: {}

@@ -15,7 +15,7 @@ spec:
       labels:
         app: nginx
     spec:
-      serviceAccountName: cd    
+      serviceAccountName: monitoring    
       containers:
       - name: installnginx
         image: olegtoshchev/ng1nx:v0.1

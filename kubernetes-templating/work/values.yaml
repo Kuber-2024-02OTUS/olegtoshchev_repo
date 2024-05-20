@@ -1,0 +1,132 @@
+
+
+replicaCount: 1
+
+workingDir: /homework
+namespace: homework
+
+image:
+  repository: olegtoshchev/ng1nx
+  pullPolicy: IfNotPresent
+
+  tag: "v0.3"
+
+strategyDeploy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+
+initContainer:
+  imageRepositoy: olegtoshchev/ng1nx
+  imageTag: "v0.3"
+  command:
+    - sh
+    - -c
+    - |
+      KUBEAPI=https://kubernetes.default.svc
+      SA=/var/run/secrets/kubernetes.io/serviceaccount
+      CACERT=${SA}/ca.crt
+      TOKEN=$(cat ${SA}/token)
+      curl --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET ${KUBEAPI}/metrics > /init/metrics.html
+      wget -O /init/index.html http://yandex.ru
+  volumeMounts:
+    - name: metrics-volume
+      mountPath: /init
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+
+  create: true
+
+  automount: true
+ 
+  annotations:
+    kubernetes.io/enforce-mountable-secrets: "true"
+
+  name: "monitoring"
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+
+securityContext: {}
+
+
+service:
+  name: svc-nginx-cip
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+
+  hosts:
+    - host: homework.otus
+      paths:
+        - path: /index.html
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: "{{ .Values.service.name }}"
+              port:
+                number: "{{ .Values.service.port }}"
+        - path: /metrics.html
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: "{{ .Values.service.name }}"
+              port:
+                number: "{{ .Values.service.port }}"
+  tls: []
+
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /index.html
+    port: http
+  failureThreshold: 1
+  periodSeconds: 5
+lifecycle:
+  preStop:
+    exec:
+      command: ["sh", "-c", "rm -rf /homework/index.html"]
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes:
+ - name: metrics-volume
+   persistentVolumeClaim:
+     claimName: kuber-pvc
+
+volumeMounts:
+ - name: metrics-volume
+   mountPath: "/homework"
+
+nodeSelector: []
+
+redis:
+  architecture: standalone
+  namespaceOverride: homework
+
+tolerations: []
+
+affinity: {}

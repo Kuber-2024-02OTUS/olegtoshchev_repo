@@ -1,0 +1,8 @@
+
+
+
+kubectl get node -o wide --show-labels                                                                          
+NAME                        STATUS   ROLES    AGE     VERSION   LABELS
+cl112h6tvrng6kb9l3mh-ytuk   Ready    <none>   2d21h   v1.26.2   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/instance-type=standard-v3,beta.kubernetes.io/os=linux,failure-domain.beta.kubernetes.io/zone=ru-central1-d,kubernetes.io/arch=amd64,kubernetes.io/hostname=cl112h6tvrng6kb9l3mh-ytuk,kubernetes.io/os=linux,node.kubernetes.io/instance-type=standard-v3,node.kubernetes.io/kube-proxy-ds-ready=true,node.kubernetes.io/masq-agent-ds-ready=true,node.kubernetes.io/node-problem-detector-ds-ready=true,role=infra,topology.kubernetes.io/zone=ru-central1-d,yandex.cloud/node-group-id=catrktt2d59v2oqb0m2k,yandex.cloud/pci-topology=k8s,yandex.cloud/preemptible=false
+cl1a800sfvnr0eer875s-uluh   Ready    <none>   22m     v1.26.2   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/instance-type=standard-v3,beta.kubernetes.io/os=linux,failure-domain.beta.kubernetes.io/zone=ru-central1-d,kubernetes.io/arch=amd64,kubernetes.io/hostname=cl1a800sfvnr0eer875s-uluh,kubernetes.io/os=linux,node.kubernetes.io/instance-type=standard-v3,node.kubernetes.io/kube-proxy-ds-ready=true,node.kubernetes.io/masq-agent-ds-ready=true,node.kubernetes.io/node-problem-detector-ds-ready=true,topology.kubernetes.io/zone=ru-central1-d,yandex.cloud/node-group-id=catooihmplsthrrkqmq7,yandex.cloud/pci-topology=k8s,yandex.cloud/preemptible=false
+

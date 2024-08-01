@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: operators
+  labels:
+    app: operators
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: operators
+  template:
+    metadata:
+      labels:
+        app: operators
+    spec:
+      containers:
+      - name: mysql
+        image: roflmaoinmysoul/mysql-operator:1.0.0
+      serviceAccountName: mysql-admin

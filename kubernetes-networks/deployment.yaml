@@ -25,7 +25,7 @@ spec:
          - wget 
          - "-O" 
          - "/init/index.html" 
-         - "http://ya.ru"
+         - "http://google.ru"
          volumeMounts:
          - name: workdir
            mountPath: /init
